@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp22
+namespace ConsoleApp22
 {
     class Program
     {
@@ -89,14 +89,13 @@
 
 
             //завдання 5
-            //Magazine magazine = new Magazine();
-            //magazine.InputData();
-            //magazine.DisplayData();
+            Magazine magazine = new Magazine();
+            magazine.Run();
 
             //завдання 6
-            Store store = new Store();
-            store.InputData();
-            store.DisplayData();
+            //Store store = new Store();
+            //store.InputData();
+            //store.DisplayData();
         }
     }
 
@@ -140,7 +139,17 @@
         private string description;
         private string phoneNumber;
         private string email;
-
+        private int employeeCount;
+        public int EmployeeCount
+        {
+            get { return employeeCount; }
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentException("Кількість працівників не може бути від'ємною.");
+                employeeCount = value;
+            }
+        }
         public void InputData()
         {
             Console.Write("Назва журналу: ");
@@ -153,8 +162,9 @@
             phoneNumber = Console.ReadLine();
             Console.Write("Email: ");
             email = Console.ReadLine();
+            Console.Write("Кількість працівників: ");
+            EmployeeCount = int.Parse(Console.ReadLine());
         }
-
         public void DisplayData()
         {
             Console.WriteLine($"Назва: {name}");
@@ -162,10 +172,86 @@
             Console.WriteLine($"Опис: {description}");
             Console.WriteLine($"Телефон: {phoneNumber}");
             Console.WriteLine($"Email: {email}");
+            Console.WriteLine($"Кількість працівників: {employeeCount}");
+        }
+        public static Magazine operator +(Magazine magazine, int count)
+        {
+            magazine.EmployeeCount += count;
+            return magazine;
+        }
+        public static Magazine operator -(Magazine magazine, int count)
+        {
+            if (magazine.EmployeeCount < count)
+                throw new InvalidOperationException("Кількість працівників не може бути від'ємною.");
+            magazine.EmployeeCount -= count;
+            return magazine;
+        }
+        public static bool operator ==(Magazine mag1, Magazine mag2)
+        {
+            return mag1.EmployeeCount == mag2.EmployeeCount;
         }
 
-        public string GetEmail() => email;
-        public void SetEmail(string newEmail) => email = newEmail;
+        public static bool operator !=(Magazine mag1, Magazine mag2)
+        {
+            return mag1.EmployeeCount != mag2.EmployeeCount;
+        }
+        public static bool operator <(Magazine mag1, Magazine mag2)
+        {
+            return mag1.EmployeeCount < mag2.EmployeeCount;
+        }
+
+        public static bool operator >(Magazine mag1, Magazine mag2)
+        {
+            return mag1.EmployeeCount > mag2.EmployeeCount;
+        }
+        public override bool Equals(object obj)
+        {
+            if (obj is Magazine)
+            {
+                return this.EmployeeCount == ((Magazine)obj).EmployeeCount;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return EmployeeCount.GetHashCode();
+        }
+        public void Run()
+        {
+            Magazine mag1 = new Magazine();
+            Console.WriteLine("Введіть дані для журналу 1:");
+            mag1.InputData();
+
+            Magazine mag2 = new Magazine();
+            Console.WriteLine("\nВведіть дані для журналу 2:");
+            mag2.InputData();
+
+            Console.WriteLine("\nІнформація про журнал 1:");
+            mag1.DisplayData();
+            Console.WriteLine("\nІнформація про журнал 2:");
+            mag2.DisplayData();
+
+            Console.WriteLine("\nЗбільшуємо кількість працівників у журналі 1 на 5.");
+            mag1 = mag1 + 5;
+            mag1.DisplayData();
+
+            Console.WriteLine("\nЗменшуємо кількість працівників у журналі 2 на 3.");
+            mag2 = mag2 - 3;
+            mag2.DisplayData();
+
+            Console.WriteLine("\nПеревірка рівності кількості працівників:");
+            if (mag1 == mag2)
+                Console.WriteLine("Кількість працівників у двох журналах однакова.");
+            else
+                Console.WriteLine("Кількість працівників у журналах різна.");
+
+            Console.WriteLine("\nПорівняння кількості працівників:");
+            if (mag1 > mag2)
+                Console.WriteLine("У журналі 1 більше працівників, ніж у журналі 2.");
+            else if (mag1 < mag2)
+                Console.WriteLine("У журналі 1 менше працівників, ніж у журналі 2.");
+        }
     }
 
     //завдання 6
